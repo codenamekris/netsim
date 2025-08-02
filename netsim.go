@@ -15,6 +15,7 @@ import (
 	- 
 - Come up with a more meaningful way to represent a connection between two switches
 - Status for switch interface is down by default. but if there is a an established connection, the status is up
+- create a MAC Address generator 
 
 */
 ///// STRUCTS ////// 
@@ -27,7 +28,6 @@ type Device struct {
 	name  string
 	critical bool
 	Iface *Interface
-	MacTable *MacTable
 }
 
 type Interface struct {
@@ -40,7 +40,7 @@ type Interface struct {
 
 type Switch struct{
 	Device *Device
-	macTable MacEntry
+	MacTable *MacTable
 }
 
 type Frame struct{
@@ -51,10 +51,10 @@ type Frame struct{
 
 type MacEntry struct{
 	srcMac string
-	interfaceName string
+	intId string
 }
 
-type MacTable []MacTable
+type MacTable []MacEntry
 
 /////// METHODS ///////
 
@@ -174,6 +174,9 @@ func main() {
 					Status: "Not Connected",
 				},
 	}
+
+	var sw3 *Switch
+	sw3 = new(Switch)
 
 	sw1int := sw1.Iface
 	sw2int := sw2.Iface
