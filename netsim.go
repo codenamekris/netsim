@@ -24,6 +24,7 @@ type Topology struct{
 }
 
 type Device struct {
+	DeviceType string 
 	power bool
 	name  string
 	critical bool
@@ -36,6 +37,7 @@ type Interface struct {
 	MAC string
 	ConnectedTo *Interface
 	Status string 
+	parentDevice *Device
 }
 
 type Switch struct{
@@ -47,11 +49,12 @@ type Frame struct{
 	srcMac string
 	destMac string
 	payload string
+	intfTag string
 }
 
 type MacEntry struct{
 	srcMac string
-	intId string
+	portId string
 }
 
 type MacTable []MacEntry
@@ -72,7 +75,7 @@ func (intf *Interface) SetStatus(){
 	} 
 }
 
-func (intf *Interface) showStaus() string{
+func (intf *Interface) checkStaus() string{
 	return intf.Status
 }
 
@@ -84,21 +87,40 @@ func connect(intfA *Interface, intfB *Interface){
 
 	/// return a map of connections????
 }
+func createFrame(intf *Interface, destMac string, payload string) Frame {
+	frame := Frame {
+		srcMac: intf.MAC,
+		destMac: destMac,
+		payload: payload,
+	}
 
-func sendFrame(frame Frame, intf *Interface){
-	// executed within the device at the interface level
-	// check tp see if link between two devices is up
-	// a link is when both interfaces are connected AND their status is up (struct?)
+	return frame
 }
 
-func readFrame(){
+func (intf *Interface) readFrame(frame *Frame) string{
+	// update frame interface tag for the mac table 
+	frame.intfTag = intf.PortId
+	return "frame recieved" 
+}
+
+func (sw *Switch) processFrame(frame *Frame) {
+	if frame.srcMac == "FF:FF:FF"{
+		/// call ARP
+	} else{
+		// check MAC table to see if entry exists already 
+		// if not update MAC table 
+	}
+}
+
+func (swi *Switch) updateMacTable(srcMac string, ){
 
 }
 
-func updateMacTable(){
-	//update switch Mac table when a frame is recieved on an interface
+func (intf *Interface) transmitFrame(frame *Frame, srcIntf *Interface, destIntf *Interface){
+	if srcIntf.checkStaus() == "Connected" && destIntf.checkStaus() == "Connected"{
+		destIntf.readFrame(frame)
+	}
 }
-
 
 
 func isValidIp(ip string) bool {
