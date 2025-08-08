@@ -42,14 +42,13 @@ type Interface struct {
 
 type Switch struct{
 	Device *Device
-	MacTable *MacTable
+	MacTable MacTable
 }
 
 type Frame struct{
 	srcMac string
 	destMac string
 	payload string
-	intfTag string
 }
 
 type MacEntry struct{
@@ -93,22 +92,22 @@ func createFrame(intf *Interface, destMac string, payload string) Frame {
 		destMac: destMac,
 		payload: payload,
 	}
-
+	
 	return frame
 }
 
 func (intf *Interface) readFrame(frame *Frame) string{
 	// update frame interface tag for the mac table 
-	frame.intfTag = intf.PortId
 	return "frame recieved" 
 }
 
-func (sw *Switch) processFrame(frame *Frame) {
+func (sw *Switch) processFrame(srcIntf *Interface, frame *Frame) {
 	if frame.srcMac == "FF:FF:FF"{
 		/// call ARP
 	} else{
-		// check MAC table to see if entry exists already 
-		// if not update MAC table 
+		//update MAC table 
+		macEntry := MacEntry {srcMac: frame.srcMac, portId: srcIntf.PortId}
+		sw.MacTable = append(sw.MacTable, macEntry)
 	}
 }
 
